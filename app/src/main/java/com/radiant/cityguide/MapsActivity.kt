@@ -7,10 +7,10 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.android.volley.Request
 import com.android.volley.Response
@@ -18,11 +18,11 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -36,15 +36,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
 
-    // 1
     private lateinit var locationCallback: LocationCallback
-    // 2
     private lateinit var locationRequest: LocationRequest
     private var locationUpdateState = false
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
-        // 3
         private const val REQUEST_CHECK_SETTINGS = 2
     }
 
@@ -52,6 +49,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
@@ -71,38 +69,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         createLocationRequest()
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-//    override fun onMapReady(googleMap: GoogleMap) {
-//        map = googleMap
-//
-//        // Add a marker in Sydney and move the camera
-////        val sydney = LatLng(-34.0, 151.0)
-////        map.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-////        map.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-//
-//        val myPlace = LatLng(42.8759178, 74.5912957)  // this is Bishkek
-//        map.addMarker(MarkerOptions().position(myPlace).title("My Favorite City"))
-//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myPlace, 12.0f))
-//
-//        map.uiSettings.isZoomControlsEnabled = true
-//        map.setOnMarkerClickListener(this)
-//
-//        setUpMap()
-//    }
-
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
         map.uiSettings.isZoomControlsEnabled = true
         map.setOnMarkerClickListener(this)
+
+        val bishkek = LatLng(42.8774274, 74.5956251)
+        map.addMarker(MarkerOptions().position(bishkek).title("Marker in Bishkek").snippet("75"))
+
+        val bishkek2 = LatLng(42.8579532, 74.6133573)
+        map.addMarker(MarkerOptions().position(bishkek2).title("Marker in Bishkek")
+            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)))
 
         setUpMap()
     }
@@ -131,16 +109,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
             }
         }
-
     }
 
     private fun placeMarkerOnMap(location: LatLng) {
         val markerOptions = MarkerOptions().position(location)
 
 //        val titleStr = getAddress(location)  // add these two lines
-        val titleStr = "hello there" // add these two lines
+//        val titleStr = "hello there" // add these two lines
+        val titleStrLat = location.latitude // add these two lines
+        val titleStrLong = location.longitude
 
-        markerOptions.title(titleStr)
+
+        markerOptions.title("$titleStrLat, $titleStrLong")
 
         map.addMarker(markerOptions)
     }
@@ -252,14 +232,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
 // Instantiate the RequestQueue.
         val queue = Volley.newRequestQueue(this)
-        val url = "http://www.google.com"
+        val url = "http://162.243.166.72:8086/query?db=trash_scan&q=SELECT * FROM bishkek"
 
 // Request a string response from the provided URL.
         val stringRequest = StringRequest(
             Request.Method.GET, url,
             Response.Listener<String> { response ->
                 // Display the first 500 characters of the response string.
-                textView.text = "Response is: ${response.substring(0, 10)}"
+                textView.text = "Response is: ${response.substring(0, 100)}"
             },
             Response.ErrorListener { textView.text = "That didn't work!" })
 
