@@ -65,7 +65,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         }
 
         createLocationRequest()
-//        fetchJson()
+        fetchJson()
     }
 
     class HomeFeed(val results:List<Result>)
@@ -115,11 +115,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     val bishkek2 = LatLng(42.8579532, 74.6133573)
     val bishkek3 = LatLng(42.868378, 74.576871)
     val bishkek4 = LatLng(42.828726, 74.605638)
+    val bishkek5 = LatLng(42.856391, 74.636490)
 
 
     fun setUpMarkets() {
 
-        for ()
+//        for ()
 
 //        val bishkek = LatLng(42.8774274, 74.5956251)
         map.addMarker(MarkerOptions().position(bishkek).title("Marker in Bishkek").snippet("75"))
@@ -134,7 +135,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 //        val bishkek4 = LatLng(42.828726, 74.605638)
         map.addMarker(MarkerOptions().position(bishkek4).title("Marker in Bishkek").snippet("67"))
 
-        val bishkek5 = LatLng(42.856391, 74.636490)
+//        val bishkek5 = LatLng(42.856391, 74.636490)
         map.addMarker(MarkerOptions().position(bishkek5).title("Marker in Bishkek").snippet("88"))
 
 //        val URL = getDirectionURL(bishkek, bishkek, bishkek3, bishkek4, bishkek5)
@@ -164,7 +165,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
 
-                buildPath(currentLatLng, currentLatLng, bishkek4, bishkek, bishkek2)
+                buildPath(currentLatLng, currentLatLng, bishkek4, bishkek, bishkek2, bishkek3, bishkek5)
 
 //                placeMarkerOnMap(currentLatLng)
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
@@ -172,8 +173,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         }
     }
 
-    private fun buildPath(start:LatLng, destination:LatLng, way1: LatLng, way2: LatLng, way3: LatLng) {
-        val URL = getDirectionURL(start, destination, way1, way2, way3)
+    private fun buildPath(start:LatLng, destination:LatLng, way1: LatLng, way2: LatLng, way3: LatLng, way4: LatLng, way5: LatLng) {
+        val URL = getDirectionURL(start, destination, way1, way2, way3, way4, way5)
         GetDirection(URL).execute()
     }
 
@@ -245,11 +246,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
 
-    fun getDirectionURL(origin:LatLng, dest:LatLng, waypnt:LatLng, waypnt2:LatLng, waypnt3:LatLng): String{
+    fun getDirectionURL(origin:LatLng, dest:LatLng, waypnt:LatLng, waypnt2:LatLng, waypnt3:LatLng, waypnt4:LatLng, waypnt5:LatLng): String{
         return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${dest.latitude},${dest.longitude}" +
                 "&waypoints=optimize:true|${waypnt.latitude},${waypnt.longitude} |" +
                 "${waypnt2.latitude},${waypnt2.longitude} |" +
                 "${waypnt3.latitude},${waypnt3.longitude}" +
+                "${waypnt4.latitude},${waypnt4.longitude}\" " +
+                "${waypnt5.latitude},${waypnt5.longitude}\" " +
                 "&key=AIzaSyBez6_TeUsnQ0_FA0P1o2v5v9PtrYbrsqY\n"
     }
 
